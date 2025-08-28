@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockCraft Mods | Premium Minecraft Modifications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        minecraft: {
+                            grass: '#5B8C3A',
+                            stone: '#8B8B8B',
+                            wood: '#B88762',
+                            water: '#3A71B8',
+                            dirt: '#7A4A32',
+                            dark: '#1E1E1E',
+                            light: '#F5F5F5',
+                            emerald: '#41A346',
+                            diamond: '#4CDBC4',
+                            gold: '#FFD700',
+                            redstone: '#FF0000'
+                        }
+                    },
+                    fontFamily: {
+                        'minecraft': ['"Press Start 2P"', 'cursive'],
+                        'sans': ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Press+Start+2P&display=swap');
+        
+        .block-border {
+            position: relative;
+            border: 4px solid transparent;
+        }
+        
+        .block-border:before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(135deg, 
+                #5B8C3A 25%, 
+                #3A71B8 25%, 
+                #3A71B8 50%, 
+                #B88762 50%, 
+                #B88762 75%, 
+                #7A4A32 75%);
+            background-size: 8px 8px;
+            z-index: -1;
+        }
+        
+        .dark .block-border:before {
+            background: linear-gradient(135deg, 
+                #3A71B8 25%, 
+                #5B8C3A 25%, 
+                #5B8C3A 50%, 
+                #7A4A32 50%, 
+                #7A4A32 75%, 
+                #B88762 75%);
+        }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1587573089734-ac4b01a5549c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .minecraft-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
+        
+        .minecraft-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        
+        .minecraft-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+        
+        .minecraft-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .minecraft-btn:hover:before {
+            left: 100%;
+        }
+        
+        .mod-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mod-card:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #5B8C3A, #3A71B8, #B88762);
+        }
+        
+        .mod-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .mod-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        
+        .fabric-tag {
+            background-color: #aaaaaa;
+            color: #000;
+        }
+        
+        .forge-tag {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+        
+        .premium-tag {
+            background-color: #FFD700;
+            color: #000;
+        }
+        
+        .tab-active {
+            position: relative;
+        }
+        
+        .tab-active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #5B8C3A, #3A71B8);
+            border-radius: 3px;
+        }
+        
+        .dark .tab-active:after {
+            background: linear-gradient(90deg, #3A71B8, #5B8C3A);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .minecraft-input {
+            background-color: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .minecraft-input:focus {
+            border-color: #5B8C3A;
+            box-shadow: 0 0 0 2px rgba(91, 140, 58, 0.3);
+        }
+        
+        .dark .minecraft-input:focus {
+            border-color: #3A71B8;
+            box-shadow: 0 0 0 2px rgba(58, 113, 184, 0.3);
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.1) translateY(-3px);
+        }
+        
+        .footer-link {
+            position: relative;
+        }
+        
+        .footer-link:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #5B8C3A;
+            transition: width 0.3s ease;
+        }
+        
+        .footer-link:hover:after {
+            width: 100%;
+        }
+        
+        .dark .footer-link:after {
+            background-color: #3A71B8;
+        }
+        
+        .minecraft-divider {
+            height: 16px;
+            background: linear-gradient(90deg, 
+                #5B8C3A 0%, 
+                #5B8C3A 20%, 
+                #3A71B8 20%, 
+                #3A71B8 40%, 
+                #B88762 40%, 
+                #B88762 60%,
+                #7A4A32 60%,
+                #7A4A32 80%,
+                #8B8B8B 80%,
+                #8B8B8B 100%);
+        }
+        
+        .dark .minecraft-divider {
+            background: linear-gradient(90deg, 
+                #3A71B8 0%, 
+                #3A71B8 20%, 
+                #5B8C3A 20%, 
+                #5B8C3A 40%, 
+                #7A4A32 40%, 
+                #7A4A32 60%,
+                #B88762 60%,
+                #B88762 80%,
+                #8B8B8B 80%,
+                #8B8B8B 100%);
+        }
+        
+        .floating-cube {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .pulse-glow {
+            animation: pulse-slow 3s infinite;
+        }
+    </style>
+</head>
+<body class="bg-minecraft-light dark:bg-minecraft-dark font-sans text-minecraft-dark dark:text-minecraft-light transition-colors duration-300">
+    <!-- Header/Navbar -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-minecraft-dark/80 backdrop-blur-md shadow-md">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 bg-minecraft-grass flex items-center justify-center block-border group-hover:animate-spin transition-transform duration-1000">
+                    <span class="text-white font-minecraft text-sm">UD</span>
+                </div>
+                <div>
+                    <span class="font-minecraft text-2xl text-minecraft-grass dark:text-minecraft-water block">UnsafeDodo</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 block -mt-1">Fabric Minecraft Mods</span>
+                </div>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="font-medium hover:text-minecraft-emerald dark:hover:text-minecraft-diamond transition-colors">Home</a>
+                <a href="#mods" class="font-medium hover:text-minecraft-emerald dark:hover:text-minecraft-diamond transition-colors">Mods</a>
+                <a href="#downloads" class="font-medium hover:text-minecraft-emerald dark:hover:text-minecraft-diamond transition-colors">Downloads</a>
+                <a href="#docs" class="font-medium hover:text-minecraft-emerald dark:hover:text-minecraft-diamond transition-colors">Docs</a>
+                <a href="#contact" class="font-medium hover:text-minecraft-emerald dark:hover:text-minecraft-diamond transition-colors">Contact</a>
+                
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center bg-minecraft-stone dark:bg-minecraft-dirt text-white hover:bg-minecraft-emerald dark:hover:bg-minecraft-diamond transition-colors">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+            
+            <button id="mobile-menu-button" class="md:hidden text-minecraft-grass dark:text-minecraft-water">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 px-4 pb-4 shadow-lg">
+            <div class="flex flex-col space-y-3">
+                <a href="#home" class="hover:text-minecraft-emerald dark:hover:text-minecraft-diamond font-medium py-2 transition-colors">Home</a>
+                <a href="#mods" class="hover:text-minecraft-emerald dark:hover:text-minecraft-diamond font-medium py-2 transition-colors">Mods</a>
+                <a href="#downloads" class="hover:text-minecraft-emerald dark:hover:text-minecraft-diamond font-medium py-2 transition-colors">Downloads</a>
+                <a href="#docs" class="hover:text-minecraft-emerald dark:hover:text-minecraft-diamond font-medium py-2 transition-colors">Docs</a>
+                <a href="#contact" class="hover:text-minecraft-emerald dark:hover:text-minecraft-diamond font-medium py-2 transition-colors">Contact</a>
+                
+                <div class="flex justify-between items-center pt-2">
+                    <span class="font-medium">Dark Mode</span>
+                    <button id="mobile-theme-toggle" class="w-12 h-6 rounded-full flex items-center bg-minecraft-stone dark:bg-minecraft-dirt transition-colors">
+                        <span class="w-5 h-5 rounded-full bg-white transform translate-x-0 dark:translate-x-6 transition-all duration-300"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center text-center px-4 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-16 h-16 bg-minecraft-emerald opacity-20 rounded-lg transform rotate-45 floating-cube"></div>
+            <div class="absolute top-1/3 right-1/4 w-12 h-12 bg-minecraft-diamond opacity-20 rounded-lg floating-cube animation-delay-2000"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-14 h-14 bg-minecraft-gold opacity-20 rounded-lg transform rotate-12 floating-cube animation-delay-3000"></div>
+            <div class="absolute bottom-1/3 right-1/3 w-10 h-10 bg-minecraft-redstone opacity-20 rounded-lg floating-cube animation-delay-1000"></div>
+        </div>
+        
+        <div class="container mx-auto max-w-4xl relative z-10">
+            <!-- <div class="block-border p-1 inline-block mb-8 transform transition-transform duration-500 hover:rotate-2">
+                <div class="bg-black/80 px-4 py-2">
+                    <span class="text-minecraft-emerald font-minecraft">UnsafeDodo</span>
+                </div>
+            </div> -->
+            
+            <h1 class="font-minecraft text-5xl md:text-7xl mb-6 text-white">
+                <span class="text-minecraft-emerald">Dodo's</span><span class="text-minecraft-diamond"> Mods</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl mb-10 text-gray-300 max-w-2xl mx-auto">Enhance your Minecraft experience with my Fabric mods. Custom gameplay, quality-of-life improvements, and much more.</p>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-6 mb-16">
+                <a href="#mods" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-4 px-10 rounded-lg text-lg">
+                    <i class="fas fa-cubes mr-2"></i> Explore Mods
+                </a>
+                <a href="#downloads" class="minecraft-btn bg-minecraft-diamond hover:bg-teal-500 text-white font-bold py-4 px-10 rounded-lg text-lg">
+                    <i class="fas fa-download mr-2"></i> Get Downloads
+                </a>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 bg-black/60 p-8 mx-auto max-w-2xl backdrop-blur-sm rounded-xl border border-gray-700/50">
+                <img src="https://minotar.net/helm/UnsafeDodo/600.png" alt="Developer Avatar" 
+                     class="w-24 h-24 rounded-full border-4 border-minecraft-gold shadow-lg hover:rotate-6 transition-transform duration-500">
+                <div class="text-left">
+                    <h3 class="font-bold text-minecraft-emerald mb-2 text-lg">About Me</h3>
+                    <p class="text-gray-300">Yo, Dodo here! Minecraft modder since 2021. I mostly create server-side gameplay systems that expand the vanilla experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mods Section -->
+    <section id="mods" class="py-20 px-4 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-minecraft-dark">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-minecraft text-4xl md:text-5xl mb-4 text-minecraft-dark dark:text-white">
+                    <span class="text-minecraft-emerald">Featured</span> <span class="text-minecraft-diamond">Mods</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">My most popular mods that enhance your Minecraft server with new features and mechanics.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Mod Card 1 -->
+                <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/dSn0yAs.png" alt="Cobblemon Size-Changer" class="h-full w-full object-cover">
+                        <span class="mod-tag fabric-tag">Fabric</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">Cobblemon Size-Changer</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v1.0.1</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">A sidemod for the Cobblemon mod to change a pokémon's size.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.19-1.20</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                            <a href="https://modrinth.com/mod/cobblemon-size-changer" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 2 -->
+                <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/st7C4aP.png" alt="GUI Shop" class="h-full w-full object-cover">
+                        <span class="mod-tag fabric-tag">Fabric</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">GUI Shop</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v1.4.0</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">A fabric server-side mod to create and manage GUI shops. They can be later opened by using commands, allowing integration with NPC mods like Taterzens.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.20</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                            <a href="https://modrinth.com/mod/gui-shop" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 3 -->
+                <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/eZftQI4.png" alt="Fabric Automessage" class="h-full w-full object-cover">
+                        <span class="mod-tag fabric-tag">Fabric</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">Fabric Automessage</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v1.0.0</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">A server-side mod to send automated messages to all players in a server with a specific timeout between each message.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.20</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                            <a href="https://modrinth.com/mod/fabric-automessage" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- Mod Card 4 -->
+                <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/Xb36ybo.png" alt="Cobblemon ExpLock" class="h-full w-full object-cover">
+                        <span class="mod-tag fabric-tag">Fabric</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">Cobblemon ExpLock</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v1.0.0</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">A sidemod for the Cobblemon mod to lock a pokémon's exp gain.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.19-1.20</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                            <a href="https://modrinth.com/mod/cobblemon-explock" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <!-- <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/7zQ9Q9a.png" alt="Epic Dungeons Mod" class="h-full w-full object-cover">
+                        <span class="mod-tag premium-tag">Premium</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">Epic Dungeons</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v3.0.1</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Generates massive, challenging dungeons with unique loot, custom bosses, and progression systems for adventurers.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.19.2</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-gold/20 text-minecraft-gold rounded">$9.99</span>
+                            </div>
+                            <a href="#" class="minecraft-btn bg-minecraft-diamond hover:bg-teal-500 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Buy Now
+                            </a>
+                        </div>
+                    </div>
+                </div> -->
+                
+                <!-- <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/9zQ9Q9a.png" alt="Biome Bundle Mod" class="h-full w-full object-cover">
+                        <span class="mod-tag premium-tag">Premium</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">Biome Bundle</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v2.5.0</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Expands the biome system with 64 new biomes featuring custom terrain, structures, vegetation and mob spawns.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.18-1.20</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-gold/20 text-minecraft-gold rounded">$7.99</span>
+                            </div>
+                            <a href="#" class="minecraft-btn bg-minecraft-diamond hover:bg-teal-500 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Buy Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="mod-card bg-white dark:bg-gray-800 p-0 rounded-xl overflow-hidden">
+                    <div class="relative h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <img src="https://i.imgur.com/0zQ9Q9a.png" alt="More Mobs Mod" class="h-full w-full object-cover">
+                        <span class="mod-tag forge-tag">Forge</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-xl font-bold">More Mobs</h3>
+                            <span class="ml-auto text-minecraft-gold font-minecraft text-sm">v1.3.7</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Adds 50+ new creatures to the game with unique behaviors, animations, and drops to populate your world.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="text-xs px-2 py-1 bg-minecraft-emerald/10 text-minecraft-emerald rounded">1.19.2</span>
+                                <span class="text-xs px-2 py-1 bg-minecraft-redstone/10 text-minecraft-redstone rounded">Forge</span>
+                            </div>
+                            <a href="#" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="https://modrinth.com/user/UnsafeDodo" class="minecraft-btn bg-minecraft-diamond hover:bg-teal-500 text-white font-bold py-3 px-8 rounded-lg inline-flex items-center">
+                    <i class="fas fa-list mr-2"></i> View All 4+ Mods
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Minecraft Divider -->
+    <div class="minecraft-divider"></div>
+
+    <!-- Downloads Section -->
+    <section id="downloads" class="py-20 px-4 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-minecraft text-4xl md:text-5xl mb-4">
+                    <span class="text-minecraft-emerald">Downloads</span> <span class="text-minecraft-diamond">& Store</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Get the latest versions of my mods from trusted platforms and support my work.</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 dark:border-gray-700">
+                    <button class="tab-active py-4 px-6 font-medium text-minecraft-emerald dark:text-minecraft-diamond" data-tab="free">
+                        <i class="fas fa-download mr-2"></i> Free Mods
+                    </button>
+                    <button class="py-4 px-6 font-medium text-gray-500 dark:text-gray-400 hover:text-minecraft-emerald dark:hover:text-minecraft-diamond transition-colors" data-tab="premium">
+                        <i class="fas fa-crown mr-2"></i> Premium Content
+                    </button>
+                </div>
+                
+                <!-- Free Mods Tab Content -->
+                <div id="free-tab" class="tab-content p-6">
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 mb-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Cobblemon Size-Changer</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 1.0.1 | Minecraft: 1.19.2 - 1.20.1 </p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://modrinth.com/mod/cobblemon-size-changer/version/1.0.1+1.20.1" class="minecraft-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> Modrinth
+                            </a>
+                            <!-- <a href="#" class="minecraft-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> CurseForge
+                            </a> -->
+                            <a href="https://github.com/UnsafeDodo/cobblemon-sizechanger" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fab fa-github mr-2"></i> Source Code
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 mb-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">GUI Shop</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 1.4.0 | Minecraft: 1.20.1</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://modrinth.com/mod/gui-shop/version/1.4.0+1.20.1" class="minecraft-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> Modrinth
+                            </a>
+                            <a href="https://github.com/UnsafeDodo/gui-shop" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fab fa-github mr-2"></i> Source Code
+                            </a><!-- 
+                            <a href="#" class="minecraft-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> CurseForge
+                            </a> -->
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 mb-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Fabric Automessage</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 1.0.0 | Minecraft: 1.20.1</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://modrinth.com/mod/fabric-automessage/version/1.0.0" class="minecraft-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> Modrinth
+                            </a>
+                            <a href="https://github.com/UnsafeDodo/fabric-automessage" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fab fa-github mr-2"></i> Source Code
+                            </a><!-- 
+                            <a href="#" class="minecraft-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> CurseForge
+                            </a> -->
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 mb-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Cobblemon ExpLock</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 1.0.0 | Minecraft: 1.20.1</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://modrinth.com/mod/cobblemon-explock/version/1.0.0+1.20.1" class="minecraft-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> Modrinth
+                            </a>
+                            <a href="https://github.com/UnsafeDodo/cobblemon-explock" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fab fa-github mr-2"></i> Source Code
+                            </a><!-- 
+                            <a href="#" class="minecraft-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> CurseForge
+                            </a> -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Auction House</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 1.1.0 | Minecraft: 1.20.1</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-diamond/10 text-minecraft-diamond rounded">Fabric</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://modrinth.com/mod/auctionhouse/version/1.1.0+1.20.1" class="minecraft-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> Modrinth
+                            </a>
+                            <a href="https://github.com/UnsafeDodo/fabric-auctionhouse" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fab fa-github mr-2"></i> Source Code
+                            </a><!-- 
+                            <a href="#" class="minecraft-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> CurseForge
+                            </a> -->
+                        </div>
+                    </div>
+
+                    
+                    
+                </div>
+
+                <!-- <div class="bg-gray-50 dark:bg-gray-700/50 p-6 mb-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Dynamic Seasons</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 2.1.0 | Minecraft: 1.19.2 | Downloads: 32,784</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-redstone/10 text-minecraft-redstone rounded">Forge</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="#" class="minecraft-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> CurseForge
+                            </a>
+                            <a href="#" class="minecraft-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center">
+                                <i class="fas fa-download mr-2"></i> Modrinth
+                            </a>
+                        </div>
+                    </div> -->
+                
+                <!-- Premium Mods Tab Content (hidden by default) -->
+                <div id="premium-tab" class="tab-content hidden p-6">
+                    <!-- <div class="bg-gray-50 dark:bg-gray-700/50 p-6 mb-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Epic Dungeons</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 3.0.1 | Minecraft: 1.19.2 | Price: $9.99</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-gold/20 text-minecraft-gold rounded">Premium</span>
+                            </div>
+                        </div>
+                        <p class="mb-4 text-gray-700 dark:text-gray-300">This premium mod includes 12+ hours of new dungeon content with custom bosses, loot tables, and progression systems that integrate seamlessly with vanilla Minecraft.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="#" class="minecraft-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                                <i class="fas fa-shopping-cart mr-2"></i> Buy on Gumroad
+                            </a>
+                            <a href="#" class="minecraft-btn bg-minecraft-gold hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg flex items-center">
+                                <i class="fas fa-coffee mr-2"></i> Support on Ko-fi
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-minecraft-emerald dark:text-minecraft-diamond">Biome Bundle</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Version: 2.5.0 | Minecraft: 1.19.2 | Price: $7.99</p>
+                            </div>
+                            <div class="mt-4 md:mt-0">
+                                <span class="text-xs px-2 py-1 bg-minecraft-gold/20 text-minecraft-gold rounded">Premium</span>
+                            </div>
+                        </div>
+                        <p class="mb-4 text-gray-700 dark:text-gray-300">Adds 64 new biomes with custom terrain generation, structures, and vegetation. Includes configuration tool to customize world generation to your liking.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="#" class="minecraft-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                                <i class="fas fa-shopping-cart mr-2"></i> Buy on Gumroad
+                            </a>
+                            <a href="#" class="minecraft-btn bg-minecraft-gold hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg flex items-center">
+                                <i class="fas fa-coffee mr-2"></i> Support on Ko-fi
+                            </a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Docs Section -->
+    <section id="docs" class="py-20 px-4 bg-white dark:bg-gray-800">
+        <div class="container mx-auto max-w-4xl">
+            <div class="text-center mb-16">
+                <h2 class="font-minecraft text-4xl md:text-5xl mb-4">
+                    <span class="text-minecraft-emerald">Documentation</span> <span class="text-minecraft-diamond">& Guides</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Learn how to install, configure, and get the most out of my mods.</p>
+            </div>
+            
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-6 text-minecraft-emerald dark:text-minecraft-diamond flex items-center">
+                    <i class="fas fa-rocket mr-3"></i> Getting Started
+                </h3>
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow border border-gray-200 dark:border-gray-700">
+                    <p class="mb-6 text-gray-700 dark:text-gray-300">All mods require <span class="font-bold text-minecraft-emerald dark:text-minecraft-diamond">Fabric</span> to be installed first. Make sure you have the correct version for your Minecraft installation.</p>
+                    
+                    <div class="grid gap-6 mb-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-puzzle-piece text-minecraft-diamond"></i>
+                                </div>
+                                <h4 class="font-bold text-lg">Fabric Installation</h4>
+                            </div>
+                            <ol class="list-decimal list-inside text-sm space-y-2 text-gray-700 dark:text-gray-300">
+                                <li>Download the <a href="https://fabricmc.net/use/installer/" class="text-minecraft-diamond hover:underline">Fabric Installer</a></li>
+                                <li>Run installer and select your Minecraft version</li>
+                                <li>Install <a href="https://modrinth.com/mod/fabric-api" class="text-minecraft-diamond hover:underline">Fabric API</a> mod</li>
+                                <li>Place mod .jar file in your mods folder</li>
+                            </ol>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="bg-minecraft-emerald/10 dark:bg-minecraft-diamond/10 p-4 rounded-lg border border-minecraft-emerald/20 dark:border-minecraft-diamond/20">
+                        <p class="text-sm text-minecraft-emerald dark:text-minecraft-diamond flex items-start">
+                            <i class="fas fa-info-circle mr-2 mt-1"></i>
+                            <span>Some mods may require additional libraries or dependencies. Always check the individual mod page for specific requirements before installation.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-6 text-minecraft-emerald dark:text-minecraft-diamond flex items-center">
+                    <i class="fas fa-cog mr-3"></i> Configuration
+                </h3>
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow border border-gray-200 dark:border-gray-700">
+                    <p class="mb-4 text-gray-700 dark:text-gray-300">Most mods include configuration files that can be edited to customize your experience. These are typically found in:</p>
+                    <code class="block bg-white dark:bg-gray-800 p-3 mb-6 font-mono text-sm rounded border border-gray-200 dark:border-gray-700">
+                        config/modname.json
+                    </code>
+                    
+                    <p class="mb-4 text-gray-700 dark:text-gray-300">Example configuration for GUI Shop:</p>
+                    <pre class="bg-white dark:bg-gray-800 p-4 overflow-x-auto text-sm mb-6 rounded border border-gray-200 dark:border-gray-700">
+{
+  "shops": [
+    {
+      "shopName": "Shop number one",
+      "items": [
+        {
+          "name": "The boat",
+          "material": "minecraft:acacia_chest_boat",
+          "description": [
+            "This is a nice boat",
+            "Very beautiful"
+          ],
+          "buyPrice": 50.0,
+          "sellPrice": 25.0,
+          "nbt": "{}",
+          "quantityList": [
+            1
+          ]
+        },
+        {
+          "name": "BBQ Sword",
+          "material": "minecraft:diamond_sword",
+          "description": [],
+          "buyPrice": 0.0,
+          "sellPrice": 0.0,
+          "nbt": "{Damage:0,Enchantments:[{id:\"fire_aspect\",lvl:2},{id:\"sweeping\",lvl:2}],display:{Lore:['[{\"text\":\"Crispy and tasty\",\"italic\":false}]'],Name:'[{\"text\":\"The BBQ\",\"italic\":false}]'}}",
+          "quantityList": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "shopName": "A second shop",
+      "items": []
+    }
+  ]
+}</pre>
+                    
+                    <div class="bg-minecraft-emerald/10 dark:bg-minecraft-diamond/10 p-4 rounded-lg border border-minecraft-emerald/20 dark:border-minecraft-diamond/20">
+                        <p class="text-sm text-minecraft-emerald dark:text-minecraft-diamond">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            Changes to config files require a game restart to take effect. Always back up your world before making significant configuration changes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-2xl font-bold mb-6 text-minecraft-emerald dark:text-minecraft-diamond flex items-center">
+                    <i class="fas fa-question-circle mr-3"></i> Frequently Asked Questions
+                </h3>
+                
+                <div class="accordion bg-gray-50 dark:bg-gray-700 shadow rounded-lg overflow-hidden mb-4">
+                    <button class="accordion-btn w-full text-left p-6 font-medium flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <span class="text-lg">Why isn't my mod loading?</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-200 dark:border-gray-700">
+                            <p class="mb-3 text-gray-700 dark:text-gray-300">Common reasons include:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300">
+                                <li>Incorrect Minecraft version (check mod requirements)</li>
+                                <li>Missing dependencies (check mod description)</li>
+                                <li>Conflicts with other mods (try testing with only this mod)</li>
+                                <li>Outdated mod loader (update Fabric)</li>
+                                <li>Corrupted download (try re-downloading the mod)</li>
+                            </ul>
+                            <p class="mt-3 text-gray-700 dark:text-gray-300">Check your <code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">latest.log</code> file in the logs folder for specific error messages that can help diagnose the issue.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion bg-gray-50 dark:bg-gray-700 shadow rounded-lg overflow-hidden mb-4">
+                    <button class="accordion-btn w-full text-left p-6 font-medium flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <span class="text-lg">How do I report a bug?</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-200 dark:border-gray-700">
+                            <p class="mb-3 text-gray-700 dark:text-gray-300">Please report bugs on the mod's GitHub issue tracker or through the contact form below with the following information:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300">
+                                <li>Minecraft version (e.g., 1.19.2)</li>
+                                <li>Mod version (found in mods menu)</li>
+                                <li>Detailed steps to reproduce the issue</li>
+                                <li>Crash log (if applicable) from <code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">crash-reports</code> folder</li>
+                                <li>Screenshots or video (if helpful for visualization)</li>
+                                <li>List of other installed mods (in case of conflicts)</li>
+                            </ul>
+                            <p class="mt-3 text-gray-700 dark:text-gray-300">The more information you provide, the faster I can identify and fix the issue!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion bg-gray-50 dark:bg-gray-700 shadow rounded-lg overflow-hidden">
+                    <button class="accordion-btn w-full text-left p-6 font-medium flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <span class="text-lg">Can I use your mods in my modpack?</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-200 dark:border-gray-700">
+                            <p class="mb-3 text-gray-700 dark:text-gray-300">All free mods can be used in modpacks with proper attribution. <br>Requirements:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300">
+                                <li>Include a link to the original mod page</li>
+                                <li>Clearly credit "UnsafeDodo" as the author</li>
+                                <li>Do not redistribute the mod files directly - link to official sources</li>
+                                <li>Do not claim the mod as your own creation</li>
+                            </ul>
+                            <p class="mt-3 text-gray-700 dark:text-gray-300"><span class="font-bold">Premium mods</span> require explicit permission for inclusion in modpacks. Please contact us for licensing information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Minecraft Divider -->
+    <div class="minecraft-divider"></div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="font-minecraft text-4xl md:text-5xl mb-4">
+                    <span class="text-minecraft-emerald">Contact</span> <span class="text-minecraft-diamond">Me</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Have questions, suggestions, or need support? Get in touch!</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-6 text-minecraft-emerald dark:text-minecraft-diamond">Send a Message</h3>
+                    
+                    <form class="space-y-6" id="contact-form" action="https://formspree.io/f/xovnjjpw" method="POST">
+                        <div>
+                            <label for="name" class="block mb-2 font-medium">Your Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-3 minecraft-input rounded-lg focus:outline-none focus:ring-2 focus:ring-minecraft-emerald dark:focus:ring-minecraft-diamond">
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block mb-2 font-medium">Email Address</label>
+                            <input type="email" id="email" class="w-full px-4 py-3 minecraft-input rounded-lg focus:outline-none focus:ring-2 focus:ring-minecraft-emerald dark:focus:ring-minecraft-diamond">
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block mb-2 font-medium">Subject</label>
+                            <select id="subject" class="w-full px-4 py-3 minecraft-input rounded-lg focus:outline-none focus:ring-2 focus:ring-minecraft-emerald dark:focus:ring-minecraft-diamond">
+                                <option value="">Select a topic</option>
+                                <option value="support">Mod Support</option>
+                                <option value="bug">Bug Report</option>
+                                <option value="suggestion">Feature Suggestion</option>
+                                <option value="collab">Collaboration</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block mb-2 font-medium">Message</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-3 minecraft-input rounded-lg focus:outline-none focus:ring-2 focus:ring-minecraft-emerald dark:focus:ring-minecraft-diamond"></textarea>
+                        </div>
+
+                         <!-- opzionale: honeypot anti-bot -->
+                        <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off">
+
+                        <!-- opzionale: oggetto email personalizzato lato Formspree -->
+                        <input type="hidden" name="_subject" value="New message from UnsafeDodo site">
+
+                        <!-- opzionale: redirect dopo invio -->
+                        <input type="hidden" name="_redirect" value="https://unsafedodo.github.io/">
+                        
+                        <button type="submit" class="minecraft-btn bg-minecraft-emerald hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg w-full">
+                            <i class="fas fa-paper-plane mr-2"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold mb-6 text-minecraft-emerald dark:text-minecraft-diamond">Connect With Me</h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a href="https://github.com/UnsafeDodo" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors social-icon">
+                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fab fa-github text-2xl text-gray-800 dark:text-gray-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">GitHub</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">/UnsafeDodo</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors social-icon">
+                                <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fab fa-discord text-2xl text-indigo-600 dark:text-indigo-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">Discord</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Join my server</p>
+                                </div>
+                            </a>
+                            
+                            <!-- <a href="#" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors social-icon">
+                                <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fab fa-youtube text-2xl text-red-600 dark:text-red-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">YouTube</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Tutorials & showcases</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors social-icon">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fab fa-twitter text-2xl text-blue-500 dark:text-blue-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">Twitter</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">@BlockCraftDev</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors social-icon">
+                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-coffee text-2xl text-yellow-600 dark:text-yellow-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">Ko-fi</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Support my work</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg flex items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors social-icon">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-shopping-cart text-2xl text-purple-600 dark:text-purple-300"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">Gumroad</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Premium mods</p>
+                                </div>
+                            </a> -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold mb-6 text-minecraft-emerald dark:text-minecraft-diamond">Join My Community</h3>
+                        <div class="bg-minecraft-emerald/10 dark:bg-minecraft-diamond/10 p-6 rounded-lg border border-minecraft-emerald/20 dark:border-minecraft-diamond/20">
+                            <p class="mb-4 text-gray-700 dark:text-gray-300">Connect with other players, get help with mods, suggest new features, and stay updated on the latest releases!</p>
+                            <a href="#" class="minecraft-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg inline-flex items-center justify-center w-full">
+                                <i class="fab fa-discord mr-2 text-xl"></i> Join Discord Server
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-minecraft-dark text-minecraft-light py-12 px-4">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <a href="#" class="flex items-center space-x-3 mb-4 group">
+                        <div class="w-12 h-12 bg-minecraft-emerald flex items-center justify-center rounded-lg group-hover:rotate-12 transition-transform">
+                            <span class="text-white font-minecraft text-sm">UD</span>
+                        </div>
+                        <div>
+                            <span class="font-minecraft text-2xl text-white block">UnsafeDodo</span>
+                            <span class="text-xs text-gray-400 block -mt-1">Fabric Minecraft Mods</span>
+                        </div>
+                    </a>
+                    <p class="text-sm text-gray-400 mb-4">Creating quality Minecraft mods since 2021. Enhancing your gameplay experience one block at a time.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/UnsafeDodo" class="text-gray-400 hover:text-minecraft-emerald transition-colors social-icon">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors social-icon">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                        <!-- <a href="#" class="text-gray-400 hover:text-red-500 transition-colors social-icon">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors social-icon">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a> -->
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4 text-white text-lg">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="footer-link text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#mods" class="footer-link text-gray-400 hover:text-white transition-colors">Mods</a></li>
+                        <li><a href="#downloads" class="footer-link text-gray-400 hover:text-white transition-colors">Downloads</a></li>
+                        <li><a href="#docs" class="footer-link text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#contact" class="footer-link text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4 text-white text-lg">Resources</h4>
+                    <ul class="space-y-3">
+                        <li><a href="https://wiki.fabricmc.net/start" class="footer-link text-gray-400 hover:text-white transition-colors">Fabric Wiki</a></li>
+                        <li><a href="https://wiki.fabricmc.net/tutorial:start" class="footer-link text-gray-400 hover:text-white transition-colors">Modding Tutorials</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4 text-white text-lg">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-white transition-colors">Terms of Use</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-white transition-colors">License Info</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-white transition-colors">Refund Policy</a></li>
+                        <li><a href="#" class="footer-link text-gray-400 hover:text-white transition-colors">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm text-gray-500 mb-4 md:mb-0">© 2025 UnsafeDodo. All rights reserved. Not affiliated with Mojang or Microsoft.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('color-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        mobileThemeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('color-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Tab functionality
+        const tabs = document.querySelectorAll('[data-tab]');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab styling
+                tabs.forEach(t => t.classList.remove('tab-active', 'text-minecraft-emerald', 'dark:text-minecraft-diamond'));
+                tabs.forEach(t => t.classList.add('text-gray-500', 'dark:text-gray-400'));
+                
+                tab.classList.add('tab-active', 'text-minecraft-emerald', 'dark:text-minecraft-diamond');
+                tab.classList.remove('text-gray-500', 'dark:text-gray-400');
+                
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`${tabId}-tab`).classList.remove('hidden');
+            });
+        });
+        
+        // Accordion functionality
+        const accordionButtons = document.querySelectorAll('.accordion-btn');
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const accordionContent = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                // Toggle content
+                if (accordionContent.style.maxHeight) {
+                    accordionContent.style.maxHeight = null;
+                    icon.classList.remove('rotate-180');
+                } else {
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
