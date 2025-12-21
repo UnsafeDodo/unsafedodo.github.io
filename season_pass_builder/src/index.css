@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Inter", sans-serif;
+    --font-display: "Press Start 2P", cursive;
+
+    --color-minecraft-grass: #5cb85c;
+    --color-minecraft-water: #3498db;
+    --color-minecraft-stone: #7f8c8d;
+    --color-minecraft-dirt: #8b6f47;
+
+    --color-background: #0f1419;
+    --color-surface: #1a1f2e;
+    --color-surface-hover: #252b3b;
+    --color-border: #2d3748;
+    --color-primary: #5cb85c;
+    --color-primary-hover: #4a9d4a;
+    --color-secondary: #3498db;
+    --color-text: #e2e8f0;
+    --color-text-muted: #94a3b8;
+    --color-danger: #ef4444;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+}
+
+@layer utilities {
+  .pixel-font {
+    font-family: var(--font-display);
+  }
+}
