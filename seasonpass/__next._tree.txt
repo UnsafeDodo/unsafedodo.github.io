@@ -6,4 +6,4 @@
 :HL["/images/screenshot2.png","image"]
 :HL["/images/screenshot3.png","image"]
 :HL["/images/screenshot4.png","image"]
-0:{"buildId":"WFz2Da0TpmOp234QCUN4n","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+0:{"buildId":"6DJPLMz6_BbjMZnYlTRZT","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
